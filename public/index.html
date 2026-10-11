@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f4ef">
+  <title>Roamwell — Your trip, thoughtfully planned</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="Roamwell home"><span class="brand-mark">r</span><span>roamwell<span class="brand-period">.</span><small>TRAVEL, THOUGHTFULLY</small></span></a>
+    <div class="header-right"><div class="trip-context"><span class="status-dot"></span><span id="header-destination">Your next adventure</span></div><button class="assistant-launch" id="assistant-toggle" type="button"><span aria-hidden="true">✳</span> Ask Gemini <kbd>AI</kbd></button></div>
+  </header>
+
+  <main class="shell">
+    <section class="welcome">
+      <p class="eyebrow">YOUR PERSONAL TRIP PLANNER</p>
+      <h1>A little more <em>wonder.</em><br>A lot less planning.</h1>
+      <p class="welcome-copy">Thoughtful ideas, one clear budget, and room for the unexpected.</p>
+    </section>
+
+    <nav class="tabs" aria-label="Trip planning sections" role="tablist">
+      <button class="tab active" role="tab" aria-selected="true" data-tab="lodging">Lodging</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="transportation">Transportation</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="food">Food</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="attractions">Attractions</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="itinerary">Itinerary</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="overview">Overview</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="planner">Planner</button>
+    </nav>
+
+    <section class="budget-strip" aria-label="Shared trip budget">
+      <div class="budget-heading"><div><span class="eyebrow">YOUR TRIP BUDGET · USD</span><label class="sr-only" for="quick-budget">Total trip budget</label><div class="budget-entry"><span>$</span><input id="quick-budget" type="number" min="0" step="50" value="2500"></div></div><span class="budget-status" id="budget-status">A comfortable start</span></div>
+      <div class="budget-track" aria-label="Budget used"><div id="budget-progress" class="budget-progress"></div></div>
+      <div class="budget-foot"><span id="budget-used">$0 planned</span><span id="budget-buffer">10% Buffer Funds · $250</span><span id="budget-remaining">$2,500 available</span></div>
+    </section>
+
+    <div id="notice" class="notice" role="status" hidden></div>
+
+    <section class="tab-panel" id="panel-lodging" role="tabpanel" aria-label="Lodging">
+      <div class="section-heading"><div><p class="eyebrow">01 — A PLACE TO LAND</p><h2>Find your kind of stay.</h2><p>Choose the details that make a place feel like yours.</p></div><span class="section-icon">⌂</span></div>
+      <div class="two-column">
+        <article class="card">
+          <div class="card-title"><div><h3>Your stay preferences</h3><p>Personalize your lodging plan.</p></div><span class="pill">Flexible</span></div>
+          <label class="field-label" for="lodging-city">Where would you like to stay?</label><input id="lodging-city" type="search" list="city-suggestions" autocomplete="off" placeholder="Search a U.S. city, e.g. Columbia, SC">
+          <p class="field-hint">Type to search U.S. cities and towns via <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>. Columbia, SC is included; you can always enter a destination manually.</p>
+          <label class="field-label" for="lodging-kind">Stay style</label><select id="lodging-kind"><option>Hotel</option><option>Resort</option><option>Apartment / vacation rental</option><option>Hostel</option><option>Guesthouse</option></select>
+          <div class="field-row"><div><label class="field-label" for="unit-size">Unit size</label><select id="unit-size"><option>Studio / 1 room</option><option>1 bedroom</option><option>2 bedrooms</option><option>3+ bedrooms</option></select></div><div><label class="field-label" for="guest-count">Guests</label><input id="guest-count" type="number" min="1" max="20" value="2"></div></div>
+          <label class="field-label" for="lodging-amenities">Must-have amenities</label><input id="lodging-amenities" type="text" placeholder="Pool, accessible, kitchenette…">
+          <label class="field-label" for="lodging-notes">Lodging notes</label><textarea id="lodging-notes" rows="2" placeholder="Anything else that matters to you"></textarea>
+          <p class="fine-print">Live inventory and booking are not connected. Prices below are planning estimates—confirm details and policies with the property.</p>
+        </article>
+        <article class="card tinted-card">
+          <div class="card-title"><div><h3>Your planned stay</h3><p>Adjust the estimate; your budget updates automatically.</p></div><span class="pill pill-warm">ESTIMATE</span></div>
+          <label class="field-label" for="lodging-name">Property or stay description</label><input id="lodging-name" type="text" value="Boutique stay in the city">
+          <div class="field-row"><div><label class="field-label" for="lodging-nightly">Estimated price / night (USD)</label><div class="input-prefix"><span>$</span><input id="lodging-nightly" type="number" min="0" step="1" value="125"></div></div><div><label class="field-label">Nights</label><div class="readout" id="lodging-nights">7 nights</div></div></div>
+          <div class="price-line"><span>Estimated stay total</span><strong id="lodging-total">$875</strong></div>
+          <button class="button button-secondary" id="save-lodging" type="button">Save stay details</button>
+        </article>
+      </div>
+      <article class="card hotel-recommendations">
+        <div class="card-title"><div><p class="eyebrow">STAYS IN YOUR DESTINATION</p><h3>Places to stay in <span id="hotel-city-name">Porto, Portugal</span></h3><p>Open Google Maps hotel results for current property listings and their own photos. Inventory, availability, prices, and reviews are not connected here.</p></div><span class="pill">LIVE MAP SEARCH</span></div>
+        <div class="hotel-search-map"><iframe id="hotel-map" title="Google Maps hotel search" loading="lazy" referrerpolicy="no-referrer" src="https://maps.google.com/maps?q=hotels%20in%20Porto%2C%20Portugal&amp;output=embed"></iframe><a id="hotel-map-link" class="button button-secondary" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/hotels+in+Porto,+Portugal">Open hotel listings &amp; photos in Google Maps ↗</a></div>
+        <div id="hotel-photos" class="hotel-photos"><p class="saved-empty">Looking for openly licensed hotel photos for this destination…</p></div>
+        <p class="fine-print">Photos come from Wikimedia Commons and link to their source and license. They illustrate named hotel places but do not confirm current operation, inventory, quality, price, or availability. Google Maps provides current listings and property photos after you open its results.</p>
+      </article>
+    </section>
+
+    <section class="tab-panel" id="panel-transportation" role="tabpanel" aria-label="Getting there" hidden>
+      <div class="section-heading"><div><p class="eyebrow">02 — THE JOURNEY</p><h2>Getting there is part of it.</h2><p>Compare a few ways to make the trip.</p></div><span class="section-icon">↗</span></div>
+      <div class="two-column">
+        <article class="card">
+          <div class="card-title"><div><h3>Your route</h3><p>A city, airport, or station is plenty—no home address needed.</p></div></div>
+          <div class="field-row"><div><label class="field-label" for="origin">Starting from</label><input id="origin" type="search" list="city-suggestions" autocomplete="off" placeholder="City or airport"></div><div><label class="field-label" for="destination">Going to</label><input id="destination" type="search" list="city-suggestions" autocomplete="off" value="Porto, Portugal"></div></div>
+          <div class="field-row"><div><label class="field-label" for="start-date">Depart</label><input id="start-date" type="date"></div><div><label class="field-label" for="end-date">Return</label><input id="end-date" type="date"></div></div>
+          <label class="field-label">Choose how to go</label><div class="choice-row" id="transport-choices">
+            <button class="choice selected" type="button" data-method="Flight">✈ <span>Flight</span></button><button class="choice" type="button" data-method="Train">▱ <span>Train</span></button><button class="choice" type="button" data-method="Bus">▰ <span>Bus</span></button><button class="choice" type="button" data-method="Metro">↔ <span>Metro</span></button><button class="choice" type="button" data-method="Driving">⌁ <span>Drive</span></button>
+          </div>
+          <div id="transport-inputs-flight" class="mode-inputs">
+            <div class="field-row"><div><label class="field-label" for="flight-carrier">Airline (optional)</label><input id="flight-carrier" type="text" placeholder="Airline"></div><div><label class="field-label" for="flight-fare">Estimated fare / traveler (USD)</label><div class="input-prefix"><span>$</span><input id="flight-fare" type="number" min="0" step="1"></div></div></div>
+            <p class="fine-print">Round-trip estimate is calculated from your traveler count and entered fare. Live flight schedules, baggage rules, and fares are not connected.</p>
+            <button class="button button-secondary" id="route-advice" type="button">Ask Gemini about this route</button>
+            <div id="route-answer" class="answer-box" hidden></div>
+            <a class="button button-secondary external-link" id="flight-search" target="_blank" rel="noopener noreferrer" href="https://www.google.com/travel/flights">Search current options ↗</a>
+          </div>
+          <div id="transport-inputs-train" class="mode-inputs" hidden>
+            <div class="field-row"><div><label class="field-label" for="train-operator">Train operator (optional)</label><input id="train-operator" type="text" placeholder="Rail provider"></div><div><label class="field-label" for="train-stations">Stations (optional)</label><input id="train-stations" type="text" placeholder="From / to station"></div></div>
+            <label class="field-label" for="train-fare">Round-trip fare / traveler (USD)</label><div class="input-prefix"><span>$</span><input id="train-fare" type="number" min="0" step="1"></div>
+            <p class="fine-print">Enter the fare you found; the planner totals it for all travelers. Route map switches to transit directions.</p>
+          </div>
+          <div id="transport-inputs-bus" class="mode-inputs" hidden>
+            <div class="field-row"><div><label class="field-label" for="bus-operator">Bus operator (optional)</label><input id="bus-operator" type="text" placeholder="Bus provider"></div><div><label class="field-label" for="bus-stations">Stations (optional)</label><input id="bus-stations" type="text" placeholder="From / to station"></div></div>
+            <label class="field-label" for="bus-fare">Round-trip fare / traveler (USD)</label><div class="input-prefix"><span>$</span><input id="bus-fare" type="number" min="0" step="1"></div>
+            <p class="fine-print">Enter a fare from your operator; the planner totals it for all travelers. Bus routing availability varies by city.</p>
+          </div>
+          <div id="transport-inputs-metro" class="mode-inputs" hidden>
+            <div class="field-row"><div><label class="field-label" for="metro-system">Metro / transit system</label><input id="metro-system" type="text" placeholder="City transit system"></div><div><label class="field-label" for="metro-pass-days">Pass days</label><input id="metro-pass-days" type="number" min="1" step="1"></div></div>
+            <div class="field-row"><div><label class="field-label" for="metro-pass">Pass price / traveler (USD)</label><div class="input-prefix"><span>$</span><input id="metro-pass" type="number" min="0" step="0.5"></div></div><div><label class="field-label" for="metro-rides">Or fare / ride (USD)</label><div class="input-prefix"><span>$</span><input id="metro-rides" type="number" min="0" step="0.25"></div></div></div>
+            <label class="field-label" for="metro-rides-day">Rides per day if paying per ride</label><input id="metro-rides-day" type="number" min="0" step="1">
+            <p class="fine-print">If a pass price is entered it is used; otherwise estimated cost is fare per ride × rides/day × pass days × travelers. Enter current fares from your transit agency.</p>
+          </div>
+          <div id="transport-inputs-driving" class="mode-inputs" hidden>
+            <div class="field-row"><div><label class="field-label" for="drive-vehicle">Vehicle / fuel type</label><select id="drive-vehicle"><option>Gasoline</option><option>Hybrid</option><option>Electric</option></select></div><div><label class="field-label" for="drive-distance">Round-trip distance (miles)</label><input id="drive-distance" type="number" min="0" step="1"></div></div>
+            <div class="field-row" id="fuel-inputs"><div><label class="field-label" for="drive-mpg">Fuel economy (MPG)</label><input id="drive-mpg" type="number" min="1" step="0.1"></div><div><label class="field-label" for="drive-gas-price">Fuel price / gallon (USD)</label><div class="input-prefix"><span>$</span><input id="drive-gas-price" type="number" min="0" step="0.01"></div></div></div>
+            <div id="charging-inputs" hidden><label class="field-label" for="drive-charging-cost">Estimated charging cost for route (USD)</label><div class="input-prefix"><span>$</span><input id="drive-charging-cost" type="number" min="0" step="1"></div><p class="fine-print">Charging cost is your estimate. Charger availability, connectors, and live station status are not verified.</p></div>
+            <p class="field-hint" id="drive-estimate-hint">Enter round-trip miles and your vehicle fuel details; estimated fuel cost recalculates automatically.</p>
+          </div>
+          <div class="field-row transport-summary"><div><label class="field-label" for="transport-travelers">Travelers</label><input id="transport-travelers" type="number" min="1" max="20" step="1"></div><div><label class="field-label">Calculated transportation estimate (USD)</label><div class="readout" id="transport-cost">$450</div></div></div>
+          <p class="fine-print" id="transport-fare-note">Estimates use your entered route and fares. No operator, transit feed, live prices, tickets, or reservations are connected.</p>
+        </article>
+        <article class="card map-card">
+          <div class="card-title"><div><h3 id="route-map-title">Your route at a glance</h3><p id="route-map-subtitle">Explore route directions for your selected travel mode.</p></div></div>
+          <iframe id="route-map" title="Route map" loading="lazy" referrerpolicy="no-referrer" src="https://www.openstreetmap.org/export/embed.html?bbox=-8.70%2C41.12%2C-8.56%2C41.18&amp;layer=mapnik"></iframe>
+          <a class="text-link" id="map-link" href="https://www.openstreetmap.org/" target="_blank" rel="noopener noreferrer">Open interactive map ↗</a>
+          <div id="charging-map-link-wrap" class="charging-map-link" hidden><a id="charging-map-link" class="button button-secondary" target="_blank" rel="noopener noreferrer">Find EV charging ports ↗</a></div>
+          <div class="map-callout"><span>ⓘ</span><p id="route-map-note">Route map updates when you change transport mode or route. Map directions and transit data are supplied by Google Maps and may not represent live service.</p></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="panel-food" role="tabpanel" aria-label="Food" hidden>
+      <div class="section-heading"><div><p class="eyebrow">03 — GOOD THINGS TO EAT</p><h2>Food, without the fuss.</h2><p>A flexible food plan for wherever the day takes you.</p></div><span class="section-icon">✳</span></div>
+      <article class="card">
+        <div class="card-title"><div><h3>Food preferences</h3><p>Choose all that apply. Preferences help you plan; they do not verify ingredients.</p></div></div>
+        <div class="check-grid">
+          <label class="check-chip"><input type="checkbox" name="diet" value="Vegan"> Vegan</label><label class="check-chip"><input type="checkbox" name="diet" value="Vegetarian"> Vegetarian</label><label class="check-chip"><input type="checkbox" name="diet" value="Gluten-free"> Gluten-free</label><label class="check-chip"><input type="checkbox" name="diet" value="Dairy-free"> Dairy-free</label><label class="check-chip"><input type="checkbox" name="diet" value="Halal"> Halal</label>          <label class="check-chip"><input type="checkbox" name="diet" value="No preference"> No preference</label><label class="check-chip"><input type="checkbox" name="diet" value="Other"> Other</label>
+        </div>
+        <div class="field-row"><div><label class="field-label" for="food-other">Other preferences / allergies</label><input id="food-other" type="text" placeholder="No peanuts · confirm cross-contact"></div><div><label class="field-label" for="meal-style">Meal style</label><select id="meal-style"><option>Mix dining out + groceries</option><option>Mostly dining out</option><option>Mostly groceries / self-catered</option></select></div></div>
+        <p class="fine-print">For allergies or dietary restrictions, ask the restaurant or manufacturer directly before eating.</p>
+      </article>
+      <article class="card">
+        <div class="card-title"><div><h3>Your daily food budget</h3><p>A seven-day allowance for meals, groceries, snacks, and drinks.</p></div><span class="pill">ALL AMOUNTS IN USD</span></div>
+        <div class="field-row"><div><label class="field-label" for="food-daily">Daily allowance</label><div class="input-prefix"><span>$</span><input id="food-daily" type="number" min="0" step="1" value="40"></div></div><div><label class="field-label">Days</label><div class="readout" id="food-days">7 days</div></div></div>
+        <div class="food-summary"><div><span>Trip food budget</span><strong id="food-budget">$280</strong></div><div><span>Actual expenses recorded</span><strong id="food-spent">$0</strong></div><div><span>Remaining trip food budget</span><strong id="food-left">$280</strong></div></div>
+        <div class="daily-summary" id="daily-summary"></div>
+      </article>
+      <article class="card">
+        <div class="card-title"><div><h3>Keep track as you go</h3><p>Keep the little purchases in the same place as the big meals.</p></div></div>
+        <form id="expense-form" class="expense-form">
+          <div><label class="field-label" for="expense-date">Date</label><input id="expense-date" type="date" required></div>
+          <div><label class="field-label" for="expense-description">Expense</label><input id="expense-description" type="text" placeholder="Lunch by the river" required maxlength="160"></div>
+          <div><label class="field-label" for="expense-amount">Amount (USD)</label><div class="input-prefix"><span>$</span><input id="expense-amount" type="number" min="0.01" step="0.01" required></div></div>
+          <div><label class="field-label" for="expense-type">Type</label><select id="expense-type"><option>Restaurant</option><option>Café</option><option>Grocery store</option><option>Other</option></select></div>
+          <button class="button button-dark" type="submit">Add expense +</button>
+        </form>
+        <div id="expenses-list" class="expenses-list"></div>
+      </article>
+      <article class="card">
+        <div class="card-title"><div><h3>Affordable food ideas</h3><p>Porto starting points to check—not live offers.</p></div><span class="pill">VEGETARIAN-FRIENDLY IDEAS</span></div>
+        <div class="idea-grid">
+          <div class="idea-card"><span class="idea-icon">☕</span><h4>Neighborhood lunch café</h4><p>Look for a vegetarian-friendly lunch and plate near your route. Ask about ingredients and today's menu.</p><strong>$8–12 <small>/ meal · sample estimate</small></strong></div>
+          <div class="idea-card"><span class="idea-icon">✳</span><h4>A quick room-made meal</h4><p>Try a chickpea salad or sandwich using a few groceries. A kitchenette is only available if your stay confirms one.</p><strong>$4–7 <small>/ meal · sample estimate</small></strong></div>
+        </div>
+        <p class="fine-print">Compare current menus and shop prices locally. These estimates are not verified recommendations and do not guarantee dietary suitability.</p>
+      </article>
+      <article class="card ai-food-card">
+        <div class="card-title"><div><h3>Ask for a food idea</h3><p>Get a starting point that considers your food preferences and trip allowance.</p></div><span class="pill pill-ai">GEMINI AI</span></div>
+        <form id="food-chat-form" class="inline-chat"><input id="food-question" type="text" placeholder="What are some easy vegetarian lunches?" aria-label="Ask a food-planning question" required><button class="button button-dark" type="submit">Ask Gemini</button></form>
+        <p class="fine-print">AI suggestions do not verify ingredients or guarantee allergen safety. Confirm directly with the restaurant or manufacturer.</p>
+        <div id="food-answer" class="answer-box" hidden></div>
+      </article>
+    </section>
+
+    <section class="tab-panel" id="panel-attractions" role="tabpanel" aria-label="Things to do" hidden>
+      <div class="section-heading"><div><p class="eyebrow">04 — OUT IN THE WORLD</p><h2>Find your kind of wonder.</h2><p>Shape suggestions around what you love—and what fits your budget.</p></div><span class="section-icon">✺</span></div>
+      <article class="card">
+        <div class="card-title"><div><h3>Your travel energy</h3><p>Choose the preferences that fit you; we’ll use them across your plan.</p></div></div>
+        <div class="tag-list" id="personality-tags"><button type="button" class="tag" data-tag="Adventurous">Adventurous</button><button type="button" class="tag" data-tag="Outdoors">Outdoors</button><button type="button" class="tag" data-tag="Quiet">Quiet</button><button type="button" class="tag" data-tag="Social">Social</button><button type="button" class="tag" data-tag="Culture">Culture</button><button type="button" class="tag" data-tag="Foodie">Foodie</button><button type="button" class="tag" data-tag="Relaxed">Relaxed</button></div>
+        <p class="fine-print">Suggestions are illustrative Porto ideas, not live-verified venue listings. Details and prices need confirmation with official sources.</p>
+      </article>
+      <div class="list-heading"><div><p class="eyebrow">A FEW IDEAS TO GET YOU STARTED</p><h3>Nearby inspiration <span class="muted">· distances are approximate</span></h3></div><span id="attraction-count" class="pill">5 IDEAS</span></div>
+      <div id="attractions-list" class="attractions-list"></div>
+    </section>
+
+    <section class="tab-panel" id="panel-itinerary" role="tabpanel" aria-label="Itinerary" hidden>
+      <div class="section-heading"><div><p class="eyebrow">05 — MAKE IT YOURS</p><h2>Days with room to wander.</h2><p>Build one simple plan. Packing comes together in your overview.</p></div><span class="section-icon">☼</span></div>
+      <article class="card">
+        <div class="card-title"><div><h3>Your itinerary</h3><p>Add, edit, or remove plans. Restrictions are not verified unless an official source is linked.</p></div><button class="button button-secondary button-small" id="add-itinerary" type="button">+ Add a plan</button></div>
+        <div id="itinerary-list" class="itinerary-list"></div>
+        <form id="itinerary-form" class="inline-form" hidden>
+          <div><label class="field-label" for="itinerary-day">Day</label><input id="itinerary-day" type="number" min="1" value="1" required></div>
+          <div><label class="field-label" for="itinerary-time">Time</label><input id="itinerary-time" type="time" value="10:00"></div>
+          <div><label class="field-label" for="itinerary-title">Plan</label><input id="itinerary-title" type="text" placeholder="Explore the old town" required></div>
+          <div><label class="field-label" for="itinerary-cost">Est. cost (USD)</label><input id="itinerary-cost" type="number" min="0" step="1" value="0"></div>
+          <button class="button button-dark" type="submit">Add to itinerary</button><button class="button button-quiet" id="cancel-itinerary" type="button">Cancel</button>
+        </form>
+      </article>
+      <article class="card gentle-note"><span>ⓘ</span><p>One itinerary, one packing checklist. Use the checkboxes in your Overview to keep a consolidated list; this same checklist is saved with your trip.</p></article>
+      <article class="card packing-card">
+        <div class="card-title"><div><p class="eyebrow">THE LAST STEP</p><h3>Consolidated packing checklist</h3><p>Same checklist as Overview—check items off in either place.</p></div></div>
+        <div id="packing-list-itinerary" class="packing-list"></div>
+      </article>
+    </section>
+
+    <section class="tab-panel" id="panel-overview" role="tabpanel" aria-label="Overview" hidden>
+      <div class="section-heading"><div><p class="eyebrow">06 — YOUR WHOLE TRIP</p><h2>Everything in one place.</h2><p>A clear budget, a thoughtful buffer, and your trip details.</p></div><span class="section-icon">✧</span></div>
+      <div class="two-column">
+        <article class="card">
+          <div class="card-title"><div><h3>Trip basics</h3><p>Set the budget early; the same numbers follow you through every tab.</p></div></div>
+          <label class="field-label" for="overview-destination">Destination</label><input id="overview-destination" type="search" list="city-suggestions" autocomplete="off" value="Porto, Portugal">
+          <div class="field-row"><div><label class="field-label" for="overview-origin">Starting from</label><input id="overview-origin" type="search" list="city-suggestions" autocomplete="off" placeholder="City or airport"></div><div><label class="field-label" for="budget-input">Total trip budget (USD)</label><div class="input-prefix"><span>$</span><input id="budget-input" type="number" min="0" step="50" value="2500"></div></div></div>
+          <div class="field-row"><div><label class="field-label" for="overview-start-date">Start date</label><input id="overview-start-date" type="date"></div><div><label class="field-label" for="overview-end-date">End date</label><input id="overview-end-date" type="date"></div></div>
+          <div class="buffer-label"><label class="field-label" for="buffer-percent">Buffer Funds <button class="info-button" id="buffer-info" type="button" aria-label="What are Buffer Funds?">i</button></label><span id="buffer-percent-label">10%</span></div>
+          <input id="buffer-percent" type="range" min="0" max="30" step="1" value="10">
+          <p class="field-hint">A planning suggestion, not a universal requirement. Reserved for emergencies and unexpected costs.</p>
+          <div class="buffer-math"><div><span>Buffer Funds <span class="muted">(of total budget)</span></span><strong id="buffer-amount">$250</strong></div><div><span>Available for planned expenses</span><strong id="planned-allowance">$2,250</strong></div></div>
+        </article>
+        <article class="card budget-card">
+          <div class="card-title"><div><h3>Budget at a glance</h3><p>Planned costs are estimates unless confirmed by a provider.</p></div><span class="pill">USD</span></div>
+          <div id="budget-breakdown" class="budget-breakdown"></div>
+          <div class="budget-total-line"><span>Estimated planned spend</span><strong id="overview-spend">$0</strong></div>
+          <div class="budget-total-line remaining-line"><span>Remaining planned allowance</span><strong id="overview-left">$2,250</strong></div>
+          <div id="budget-warning" class="warning-message" hidden></div>
+        </article>
+      </div>
+      <article class="card packing-card">
+        <div class="card-title"><div><p class="eyebrow">PACK FOR THIS TRIP</p><h3>Your consolidated packing list</h3><p>Personalized starting points. Check items off as you pack.</p></div><span class="pill" id="packing-count">0 ITEMS</span></div>
+        <div id="packing-list" class="packing-list"></div>
+        <p class="fine-print">Carrier, airport, lodging, and activity restrictions are not connected to official live sources here. Check the actual operator or venue policy before travel; no restriction is represented as verified.</p>
+      </article>
+      <article class="card receipt-card">
+        <div class="card-title"><div><p class="eyebrow">A CLEAR LOOK AT THE PLAN</p><h3>Your trip receipt</h3><p>This is a planning summary—not a booking or payment confirmation.</p></div><button class="button button-dark" id="create-receipt" type="button">Review trip receipt</button></div>
+        <div id="receipt-content" class="receipt-content" hidden></div>
+      </article>
+    </section>
+
+    <section class="tab-panel" id="panel-planner" role="tabpanel" aria-label="Planner" hidden>
+      <div class="section-heading"><div><p class="eyebrow">07 — YOUR TRIPS, KEPT TOGETHER</p><h2>Your Planner.</h2><p>Save plans here, reopen a trip to keep working, and update or remove saved trips.</p></div><span class="section-icon">▤</span></div>
+      <article class="card planner-card">
+        <div class="card-title"><div><h3>Current trip</h3><p>Save the full plan, including transportation, lodging, food, attractions, itinerary, packing list, and budget.</p></div><div class="planner-actions"><button class="button button-secondary" id="new-plan" type="button">Start a new plan</button><button class="button button-secondary" id="save-planner-copy" type="button">Save as new trip</button><button class="button button-dark" id="save-planner" type="button">Save to Planner</button></div></div>
+        <div id="planner-current-summary" class="planner-current-summary"></div>
+      </article>
+      <article class="card planner-card">
+        <div class="card-title"><div><h3>Saved trips</h3><p>Open a plan to continue editing it. Saving while it is open updates that Planner entry.</p></div></div>
+        <div id="saved-trips" class="saved-trips"></div>
+      </article>
+      <div class="planner-detail" id="planner-detail" hidden></div>
+    </section>
+
+    <footer class="page-footer"><span>Made for the joy of going.</span><span>Ideas are estimates until verified. No bookings are made here.</span></footer>
+  </main>
+
+  <aside class="assistant-panel" id="assistant-panel" aria-label="Gemini travel assistant" hidden>
+    <div class="assistant-head"><div><span class="assistant-spark">✳</span><strong>Your travel sidekick</strong><small>Gemini AI · grounded in your trip plan</small></div><button id="assistant-close" class="icon-button" type="button" aria-label="Close assistant">×</button></div>
+    <div class="chat-disclaimer">Travel policies, prices, and availability can change. Confirm important details with official sources.</div>
+    <div id="chat-messages" class="chat-messages"><div class="chat-bubble assistant-bubble">Hi! Ask me anything about your trip, packing, transportation, or planning a day.</div></div>
+    <form id="chat-form" class="chat-form"><textarea id="chat-question" rows="2" maxlength="3000" placeholder="Ask about your trip…" required></textarea><button class="button button-dark" type="submit">Send ↗</button></form>
+  </aside>
+  <div id="assistant-backdrop" class="assistant-backdrop" hidden></div>
+  <datalist id="city-suggestions"><option value="Columbia, South Carolina"></option><option value="Columbia, SC"></option></datalist>
+  <div id="dialog" class="dialog-backdrop" hidden role="presentation"><section class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title"><button id="dialog-close" class="icon-button dialog-close" type="button" aria-label="Close">×</button><p class="eyebrow">GOOD TO KNOW</p><h2 id="dialog-title">Buffer Funds</h2><p id="dialog-copy"></p><button id="dialog-ok" class="button button-dark" type="button">Got it</button></section></div>
+  <script src="/client.js" defer></script>
+</body>
+</html>
